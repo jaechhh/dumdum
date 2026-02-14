@@ -42,7 +42,7 @@ body{
     background:rgba(0,0,0,0.85);
 }
 
-/* SLIDESHOW SCENE */
+/* SLIDESHOW */
 
 .scene{
     position:fixed;
@@ -95,31 +95,38 @@ body{
     animation:fadeIn 4s forwards;
 }
 
-/* FINAL MESSAGE */
+/* FINAL WARM BACKGROUND */
 
 .final-container{
     position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    text-align:center;
+    inset:0;
     display:flex;
     flex-direction:column;
+    justify-content:center;
     align-items:center;
+    text-align:center;
     opacity:0;
     transition:opacity 2s ease;
     z-index:10;
+
+    background:
+        radial-gradient(circle at center, rgba(255,120,80,0.6), rgba(120,0,40,0.95)),
+        linear-gradient(135deg,#ff758c,#ff7eb3);
 }
 
+/* FINAL TEXT */
+
 .final-text{
-    font-size:44px;
+    font-size:46px;
     font-weight:300;
     color:white;
-    text-shadow:0 0 30px rgba(255,46,99,0.8);
+    text-shadow:0 0 40px rgba(255,100,100,0.9);
     margin-bottom:30px;
     opacity:0;
     transition:opacity 2s ease;
 }
+
+/* ROSE CUTOUT EFFECT */
 
 .final-rose{
     width:420px;
@@ -127,9 +134,15 @@ body{
     opacity:0;
     transform:translateY(40px);
     transition:opacity 2s ease, transform 2s ease;
+
+    /* remove box look */
+    mix-blend-mode: screen;
+
     filter:
         drop-shadow(0 25px 45px rgba(0,0,0,0.6))
-        drop-shadow(0 0 40px rgba(255,0,80,0.4));
+        drop-shadow(0 0 60px rgba(255,80,80,0.7))
+        brightness(1.1)
+        contrast(1.1);
 }
 
 /* ANIMATIONS */
@@ -147,7 +160,7 @@ body{
 
 <body>
 
-<!-- START SCREEN -->
+<!-- START -->
 <div class="start-screen" id="startScreen">
     <button class="start-btn" onclick="startLove()">moi ❤️</button>
 </div>
@@ -170,40 +183,36 @@ body{
     <img src="Redrose.jpg" class="final-rose" id="finalRose">
 </div>
 
-<!-- MUSIC (Original filename kept) -->
-<audio id="music" loop preload="auto">
-    <source src="JVKE-pretty(lyricvideo).mp3" type="audio/mpeg">
-</audio>
+<!-- MUSIC -->
+<audio id="music" loop preload="auto"></audio>
 
 <script>
+
+/* ONLY FIRST 3 IMAGES + MESSAGES */
 
 const images = [
     "WhatsApp1.jpeg",
     "WhatsApp2.jpeg",
-    "WhatsApp3.jpeg",
-    "WhatsApp4.jpeg",
-    "WhatsApp5.jpeg",
-    "WhatsApp6.jpeg"
+    "WhatsApp3.jpeg"
 ];
 
 const messages = [
     "Through those glasses, my eyes only saw you...",
     "You are my favorite person in this universe.",
-    "Nothing matters to me more than you.",
-    "Every moment with you feels magical.",
-    "my dumdum.",
-    "i lovee you meine frau."
+    "Nothing matters to me more than you."
 ];
 
 let index = 0;
 
 function startLove(){
 
+    /* MUSIC FIX WITHOUT <source> */
     const music = document.getElementById("music");
-    music.load();
+    music.src = "JVKE-pretty(lyric video).mp3";
     music.volume = 0.8;
+    music.load();
 
-    music.play().catch(err => console.log("Music blocked:", err));
+    music.play().catch(err => console.log("Music issue:", err));
 
     const start = document.getElementById("startScreen");
     start.style.opacity = "0";
