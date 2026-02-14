@@ -12,7 +12,7 @@ body{
     background:#000;
 }
 
-/* ---------- START SCREEN ---------- */
+/* START SCREEN */
 
 .start-screen{
     position:fixed;
@@ -22,11 +22,12 @@ body{
     justify-content:center;
     align-items:center;
     transition:opacity 1.5s ease;
+    z-index:100;
 }
 
 .start-btn{
-    padding:18px 45px;
-    font-size:20px;
+    padding:20px 50px;
+    font-size:22px;
     border:none;
     background:rgba(0,0,0,0.6);
     color:white;
@@ -38,10 +39,10 @@ body{
 }
 
 .start-btn:hover{
-    background:rgba(0,0,0,0.8);
+    background:rgba(0,0,0,0.85);
 }
 
-/* ---------- IMAGE + MESSAGE SCENE ---------- */
+/* SLIDESHOW SCENE */
 
 .scene{
     position:fixed;
@@ -58,24 +59,24 @@ body{
 }
 
 .scene img{
-    width:320px;
-    height:320px;
+    width:330px;
+    height:330px;
     object-fit:cover;
     border-radius:25px;
-    box-shadow:0 0 60px rgba(255,0,80,0.5);
-    animation:zoomFade 1.2s ease;
+    box-shadow:0 0 60px rgba(255,0,80,0.6);
+    animation:zoomFade 1s ease;
 }
 
 .message{
     margin-top:25px;
-    font-size:26px;
+    font-size:28px;
     color:#ff6b81;
     text-align:center;
-    min-height:50px;
+    min-height:60px;
     text-shadow:0 0 15px rgba(0,0,0,0.8);
 }
 
-/* ---------- COLLAGE BACKGROUND ---------- */
+/* COLLAGE */
 
 .collage{
     position:fixed;
@@ -90,11 +91,11 @@ body{
     object-fit:cover;
     position:absolute;
     opacity:0;
-    filter:blur(6px);
-    animation:fadeIn 3s forwards;
+    filter:blur(8px);
+    animation:fadeIn 4s forwards;
 }
 
-/* ---------- FINAL MESSAGE ---------- */
+/* FINAL MESSAGE */
 
 .final-container{
     position:absolute;
@@ -111,7 +112,7 @@ body{
 }
 
 .final-text{
-    font-size:42px;
+    font-size:44px;
     font-weight:300;
     color:white;
     text-shadow:0 0 30px rgba(255,46,99,0.8);
@@ -131,7 +132,7 @@ body{
         drop-shadow(0 0 40px rgba(255,0,80,0.4));
 }
 
-/* ---------- ANIMATIONS ---------- */
+/* ANIMATIONS */
 
 @keyframes zoomFade{
     from{transform:scale(0.8);opacity:0;}
@@ -151,7 +152,7 @@ body{
     <button class="start-btn" onclick="startLove()">moi ❤️</button>
 </div>
 
-<!-- IMAGE + MESSAGE SCENE -->
+<!-- SLIDESHOW -->
 <div class="scene" id="scene">
     <img id="loveImage">
     <div class="message" id="loveMessage"></div>
@@ -160,7 +161,7 @@ body{
 <!-- COLLAGE -->
 <div class="collage" id="collage"></div>
 
-<!-- FINAL MESSAGE -->
+<!-- FINAL -->
 <div class="final-container" id="finalContainer">
     <div class="final-text" id="finalText">
         Happy Valentine's Day 💖<br>
@@ -169,8 +170,9 @@ body{
     <img src="Redrose.jpg" class="final-rose" id="finalRose">
 </div>
 
-<audio id="music" loop>
-    <source src="JVKE -  pretty (lyric video).mp3" type="audio/mpeg">
+<!-- MUSIC (Original filename kept) -->
+<audio id="music" loop preload="auto">
+    <source src="JVKE-pretty(lyricvideo).mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -178,24 +180,30 @@ body{
 const images = [
     "WhatsApp1.jpeg",
     "WhatsApp2.jpeg",
-    "WhatsApp3.jpeg"
+    "WhatsApp3.jpeg",
+    "WhatsApp4.jpeg",
+    "WhatsApp5.jpeg",
+    "WhatsApp6.jpeg"
 ];
 
 const messages = [
     "Through those glasses, my eyes only saw you...",
     "You are my favorite person in this universe.",
-    "Nothing matters to me more than you."
+    "Nothing matters to me more than you.",
+    "Every moment with you feels magical.",
+    "my dumdum.",
+    "i lovee you meine frau."
 ];
 
 let index = 0;
-let typingInterval;
 
 function startLove(){
 
     const music = document.getElementById("music");
-    if(music){
-        music.play().catch(()=>{});
-    }
+    music.load();
+    music.volume = 0.8;
+
+    music.play().catch(err => console.log("Music blocked:", err));
 
     const start = document.getElementById("startScreen");
     start.style.opacity = "0";
@@ -209,23 +217,20 @@ function startLove(){
         setTimeout(()=>{
             scene.style.opacity = "1";
             showNext();
-        },100);
+        },300);
 
     },1500);
 }
 
 function typeWriter(text, element){
-
     element.innerHTML = "";
     let i = 0;
 
-    clearInterval(typingInterval);
-
-    typingInterval = setInterval(()=>{
+    const interval = setInterval(()=>{
         element.innerHTML += text.charAt(i);
         i++;
         if(i >= text.length){
-            clearInterval(typingInterval);
+            clearInterval(interval);
         }
     },40);
 }
@@ -234,15 +239,16 @@ function showNext(){
 
     if(index >= images.length){
         document.getElementById("scene").style.opacity = "0";
-        setTimeout(showCollage,1500);
+
+        setTimeout(()=>{
+            document.getElementById("scene").style.display = "none";
+            showCollage();
+        },1500);
         return;
     }
 
-    const img = document.getElementById("loveImage");
-    const msg = document.getElementById("loveMessage");
-
-    img.src = images[index];
-    typeWriter(messages[index] || "", msg);
+    document.getElementById("loveImage").src = images[index];
+    typeWriter(messages[index], document.getElementById("loveMessage"));
 
     index++;
 
@@ -254,9 +260,10 @@ function showCollage(){
     const collage = document.getElementById("collage");
     collage.style.display = "block";
 
-    images.forEach(src=>{
+    images.forEach((src, i)=>{
         const img = document.createElement("img");
         img.src = src;
+        img.style.animationDelay = (i * 0.5) + "s";
         collage.appendChild(img);
     });
 
@@ -267,14 +274,14 @@ function showCollage(){
 
         container.style.opacity = "1";
 
-        setTimeout(()=>{ text.style.opacity = "1"; },500);
+        setTimeout(()=>{ text.style.opacity = "1"; },800);
 
         setTimeout(()=>{
             rose.style.opacity = "1";
             rose.style.transform = "translateY(0)";
         },2500);
 
-    },2000);
+    },3000);
 }
 
 </script>
