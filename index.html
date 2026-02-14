@@ -7,34 +7,42 @@
 <style>
 body{
     margin:0;
-    background: radial-gradient(circle at center,#140010,#000);
     overflow:hidden;
-    font-family: 'Segoe UI', sans-serif;
-    color:white;
+    font-family:'Segoe UI', sans-serif;
+    background:#000;
 }
 
-/* Start Button */
+/* ---------- START SCREEN ---------- */
+
+.start-screen{
+    position:fixed;
+    inset:0;
+    background:url("download (1).jpeg") center center / cover no-repeat;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    transition:opacity 1.5s ease;
+}
+
 .start-btn{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
     padding:18px 45px;
     font-size:20px;
     border:none;
-    background:linear-gradient(45deg,#ff2e63,#ff6b81);
+    background:rgba(0,0,0,0.6);
     color:white;
     border-radius:50px;
     cursor:pointer;
-    letter-spacing:1px;
-    box-shadow:0 0 25px rgba(255,46,99,0.6);
+    backdrop-filter:blur(6px);
+    letter-spacing:2px;
     transition:0.4s;
 }
+
 .start-btn:hover{
-    transform:translate(-50%,-50%) scale(1.05);
+    background:rgba(0,0,0,0.8);
 }
 
-/* Scene */
+/* ---------- IMAGE + MESSAGE SCENE ---------- */
+
 .scene{
     position:fixed;
     inset:0;
@@ -42,36 +50,33 @@ body{
     justify-content:center;
     align-items:center;
     flex-direction:column;
-    text-align:center;
-    background:linear-gradient(to bottom,#000,#140010);
+    background:
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        url("download (1).jpeg") center center / cover no-repeat;
     opacity:0;
-    transition:opacity 1s ease;
+    transition:opacity 1.5s ease;
 }
 
-.scene.active{
-    opacity:1;
-}
-
-/* Image Animation */
 .scene img{
-    max-width:85%;
-    max-height:65%;
-    border-radius:20px;
-    box-shadow:0 0 50px rgba(255,46,99,0.6);
-    animation: zoomFade 1.2s ease;
+    width:320px;
+    height:320px;
+    object-fit:cover;
+    border-radius:25px;
+    box-shadow:0 0 60px rgba(255,0,80,0.5);
+    animation:zoomFade 1.2s ease;
 }
 
-/* Message */
 .message{
     margin-top:25px;
-    font-size:28px;
+    font-size:26px;
     color:#ff6b81;
-    letter-spacing:1px;
+    text-align:center;
     min-height:40px;
-    transition:opacity 0.8s ease;
+    text-shadow:0 0 15px rgba(0,0,0,0.8);
 }
 
-/* Collage Background */
+/* ---------- COLLAGE BACKGROUND ---------- */
+
 .collage{
     position:fixed;
     inset:0;
@@ -84,70 +89,91 @@ body{
     height:100%;
     object-fit:cover;
     position:absolute;
-    opacity:0.25;
-    filter:blur(3px);
+    opacity:0;
+    filter:blur(6px);
+    animation:fadeIn 2s forwards;
 }
 
-/* Final Text */
-.final-text{
+/* ---------- FINAL MESSAGE ---------- */
+
+.final-container{
     position:absolute;
-    top:35%;
-    width:100%;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
     text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    opacity:0;
+    transition:opacity 2s ease;
+}
+
+.final-text{
     font-size:42px;
     font-weight:300;
-    letter-spacing:2px;
+    color:white;
     text-shadow:0 0 30px rgba(255,46,99,0.8);
+    margin-bottom:30px;
     opacity:0;
     transition:opacity 2s ease;
 }
 
-/* Rose Illustration */
-.rose-wrapper{
-    position:absolute;
-    bottom:50px;
-    width:100%;
-    display:flex;
-    justify-content:center;
+.final-rose{
+    width:420px;
+    max-width:85%;
     opacity:0;
-    transition:opacity 2s ease;
+    transform:translateY(40px);
+    transition:opacity 2s ease, transform 2s ease;
+
+    filter:
+        drop-shadow(0 25px 45px rgba(0,0,0,0.6))
+        drop-shadow(0 0 40px rgba(255,0,80,0.4));
+
+    mask-image: radial-gradient(circle at center, black 70%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at center, black 70%, transparent 100%);
 }
 
-/* Animations */
+/* ---------- ANIMATIONS ---------- */
+
 @keyframes zoomFade{
-    from{transform:scale(0.8);opacity:0;}
+    from{transform:scale(0.85);opacity:0;}
     to{transform:scale(1);opacity:1;}
+}
+
+@keyframes fadeIn{
+    to{opacity:0.3;}
 }
 </style>
 </head>
 
 <body>
 
-<button class="start-btn" onclick="startLove()">Enter ❤️</button>
+<!-- START SCREEN -->
+<div class="start-screen" id="startScreen">
+    <button class="start-btn" onclick="startLove()">moi ❤️</button>
+</div>
 
+<!-- IMAGE + MESSAGE SCENE -->
 <div class="scene" id="scene">
     <img id="loveImage">
     <div class="message" id="loveMessage"></div>
 </div>
 
+<!-- COLLAGE -->
 <div class="collage" id="collage"></div>
 
-<div class="final-text" id="finalText">
-    Happy Valentine's Day 💖<br>
-    For Many More Beautiful Years To Come
-</div>
-
-<div class="rose-wrapper" id="roseWrapper">
-    <!-- SVG Hand Holding Rose -->
-    <svg width="160" height="200" viewBox="0 0 200 250">
-        <path d="M100 200 C90 170 110 150 100 130 C90 110 110 90 100 70" stroke="green" stroke-width="4" fill="none"/>
-        <circle cx="100" cy="50" r="25" fill="#ff2e63"/>
-        <path d="M60 210 Q100 180 140 210 Q100 240 60 210" fill="#f5c6a5"/>
-    </svg>
+<!-- FINAL MESSAGE -->
+<div class="final-container" id="finalContainer">
+    <div class="final-text" id="finalText">
+        Happy Valentine's Day 💖<br>
+        For Many More Beautiful Years To Come
+    </div>
+    <img src="Redrose.jpg" class="final-rose" id="finalRose">
 </div>
 
 <audio id="music" loop>
-    <source src="music.mp3" type="audio/mpeg">
+    <source src="JVKE -  pretty (lyric video).mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -163,21 +189,24 @@ const images = [
 
 const messages = [
     "Through those glasses, my eyes only saw you...",
-    "You are my favorite person in this universe.",
-    "And I want forever with you."
+    "You are my,,,my favorite person in this universe.",
+    "nothing matters to me more than you."
 ];
 
 let index = 0;
-let messageIndex = 0;
 
 function startLove(){
-    document.querySelector(".start-btn").style.display="none";
+
+    document.getElementById("music").play().catch(()=>{});
+
+    const start = document.getElementById("startScreen");
+    start.style.opacity="0";
+    setTimeout(()=>{ start.style.display="none"; },1500);
+
     const scene=document.getElementById("scene");
     scene.style.display="flex";
-    setTimeout(()=>scene.classList.add("active"),100);
+    setTimeout(()=>{ scene.style.opacity="1"; },100);
 
-    const music=document.getElementById("music");
-    music.play().catch(()=>{});
     showNext();
 }
 
@@ -197,9 +226,9 @@ function showNext(){
         typeWriter(messages[index],document.getElementById("loveMessage"));
         index++;
         setTimeout(showNext,5000);
-    }else{
+    } else {
         document.getElementById("scene").style.opacity="0";
-        setTimeout(showCollage,1200);
+        setTimeout(showCollage,1500);
     }
 }
 
@@ -214,9 +243,22 @@ function showCollage(){
     });
 
     setTimeout(()=>{
-        document.getElementById("finalText").style.opacity="1";
-        document.getElementById("roseWrapper").style.opacity="1";
-    },1000);
+        const container=document.getElementById("finalContainer");
+        const text=document.getElementById("finalText");
+        const rose=document.getElementById("finalRose");
+
+        container.style.opacity="1";
+
+        setTimeout(()=>{
+            text.style.opacity="1";
+        },500);
+
+        setTimeout(()=>{
+            rose.style.opacity="1";
+            rose.style.transform="translateY(0)";
+        },2500);
+
+    },2000);
 }
 
 </script>
