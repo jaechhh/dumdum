@@ -48,10 +48,10 @@ body{
     position:fixed;
     inset:0;
     display:none;
-    justify-content:flex-start;   /* move content up */
+    justify-content:flex-start;
     align-items:center;
     flex-direction:column;
-    padding-top:80px;             /* top spacing */
+    padding-top:80px;
     background:
         linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
         url("download (1).jpeg") center center / cover no-repeat;
@@ -133,7 +133,40 @@ body{
         drop-shadow(0 0 60px rgba(255,80,80,0.7));
 }
 
-/* FLOATING HEART TRAIN */
+/* FLYING LOVE TEXT */
+
+.love-fly{
+    position:relative;
+    margin-top:25px;
+    font-size:40px;
+    font-weight:bold;
+    color:white;
+    letter-spacing:8px;
+    text-shadow:0 0 25px rgba(255,80,120,0.9);
+    height:60px;
+}
+
+.love-letter{
+    position:absolute;
+    opacity:0;
+    animation:flyIn 1.8s forwards ease;
+}
+
+@keyframes flyIn{
+    0%{
+        transform:translate(var(--x), var(--y)) rotate(180deg) scale(0.5);
+        opacity:0;
+    }
+    60%{
+        opacity:1;
+    }
+    100%{
+        transform:translate(0,0) rotate(0deg) scale(1);
+        opacity:1;
+    }
+}
+
+/* HEART TRAIN */
 
 .heart{
     position:fixed;
@@ -145,14 +178,8 @@ body{
 }
 
 @keyframes floatUp{
-    0%{
-        transform:translateY(0) translateX(0);
-        opacity:0.8;
-    }
-    100%{
-        transform:translateY(-110vh) translateX(50px);
-        opacity:0;
-    }
+    0%{ transform:translateY(0) translateX(0); opacity:0.8; }
+    100%{ transform:translateY(-110vh) translateX(50px); opacity:0; }
 }
 
 @keyframes fadeIn{
@@ -177,9 +204,12 @@ body{
 <div class="final-container" id="finalContainer">
     <div class="final-text" id="finalText">
         Happy Valentine's Day 💖<br>
- To Many More Beautiful Memories With You
+        To Many More Beautiful Memories With You
     </div>
+
     <img src="Redrose-removebg-preview.png" class="final-rose" id="finalRose">
+
+    <div class="love-fly" id="loveFly"></div>
 </div>
 
 <audio id="music" loop></audio>
@@ -195,7 +225,7 @@ const images = [
 const messages = [
     "Through those glasses, my eyes only saw you, and in that moment m happy that it was you.",
     "You are my favorite person in this universe, the calm in my chaos and the smile in my day.",
-    "Nothing matters to me more than you, and I want to grow with you,i love you dumdum."
+    "Nothing matters to me more than you, and I want to grow with you, I love you dumdum."
 ];
 
 let index = 0;
@@ -272,9 +302,35 @@ function showCollage(){
         setTimeout(()=>{
             rose.style.opacity = "1";
             rose.style.transform = "translateY(0)";
+            flyLoveText();
         },2000);
 
     },3500);
+}
+
+/* FLYING TEXT */
+
+function flyLoveText(){
+    const text = "I LOVE YOU";
+    const container = document.getElementById("loveFly");
+    container.innerHTML = "";
+
+    text.split("").forEach((letter, i)=>{
+        const span = document.createElement("span");
+        span.className = "love-letter";
+        span.innerHTML = letter;
+
+        const startX = (Math.random() > 0.5 ? -400 : 400) + "px";
+        const startY = (Math.random() > 0.5 ? -400 : 400) + "px";
+
+        span.style.setProperty("--x", startX);
+        span.style.setProperty("--y", startY);
+
+        span.style.left = (i * 35) + "px";
+        span.style.animationDelay = (i * 0.2) + "s";
+
+        container.appendChild(span);
+    });
 }
 
 /* HEART TRAIN */
