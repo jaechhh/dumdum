@@ -48,9 +48,10 @@ body{
     position:fixed;
     inset:0;
     display:none;
-    justify-content:center;
+    justify-content:flex-start;   /* move content up */
     align-items:center;
     flex-direction:column;
+    padding-top:80px;             /* top spacing */
     background:
         linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
         url("download (1).jpeg") center center / cover no-repeat;
@@ -59,20 +60,21 @@ body{
 }
 
 .scene img{
-    width:330px;
-    height:330px;
+    width:300px;
+    height:300px;
     object-fit:cover;
     border-radius:25px;
     box-shadow:0 0 60px rgba(255,0,80,0.6);
-    animation:zoomFade 1s ease;
 }
 
 .message{
-    margin-top:25px;
-    font-size:28px;
+    margin-top:40px;
+    font-size:26px;
     color:#ff6b81;
     text-align:center;
-    min-height:60px;
+    max-width:80%;
+    line-height:1.6;
+    min-height:80px;
     text-shadow:0 0 15px rgba(0,0,0,0.8);
 }
 
@@ -95,7 +97,7 @@ body{
     animation:fadeIn 4s forwards;
 }
 
-/* FINAL WARM BACKGROUND */
+/* FINAL */
 
 .final-container{
     position:absolute;
@@ -108,16 +110,10 @@ body{
     opacity:0;
     transition:opacity 2s ease;
     z-index:10;
-
-    background:
-        radial-gradient(circle at center, rgba(255,120,80,0.6), rgba(120,0,40,0.95)),
-        linear-gradient(135deg,#ff758c,#ff7eb3);
 }
 
-/* FINAL TEXT */
-
 .final-text{
-    font-size:46px;
+    font-size:44px;
     font-weight:300;
     color:white;
     text-shadow:0 0 40px rgba(255,100,100,0.9);
@@ -126,30 +122,37 @@ body{
     transition:opacity 2s ease;
 }
 
-/* ROSE CUTOUT EFFECT */
-
 .final-rose{
-    width:420px;
+    width:380px;
     max-width:85%;
     opacity:0;
     transform:translateY(40px);
     transition:opacity 2s ease, transform 2s ease;
-
-    /* remove box look */
-    mix-blend-mode: screen;
-
     filter:
         drop-shadow(0 25px 45px rgba(0,0,0,0.6))
-        drop-shadow(0 0 60px rgba(255,80,80,0.7))
-        brightness(1.1)
-        contrast(1.1);
+        drop-shadow(0 0 60px rgba(255,80,80,0.7));
 }
 
-/* ANIMATIONS */
+/* FLOATING HEART TRAIN */
 
-@keyframes zoomFade{
-    from{transform:scale(0.8);opacity:0;}
-    to{transform:scale(1);opacity:1;}
+.heart{
+    position:fixed;
+    bottom:-20px;
+    font-size:20px;
+    animation:floatUp 6s linear infinite;
+    opacity:0.8;
+    z-index:20;
+}
+
+@keyframes floatUp{
+    0%{
+        transform:translateY(0) translateX(0);
+        opacity:0.8;
+    }
+    100%{
+        transform:translateY(-110vh) translateX(50px);
+        opacity:0;
+    }
 }
 
 @keyframes fadeIn{
@@ -160,35 +163,28 @@ body{
 
 <body>
 
-<!-- START -->
 <div class="start-screen" id="startScreen">
     <button class="start-btn" onclick="startLove()">moi ❤️</button>
 </div>
 
-<!-- SLIDESHOW -->
 <div class="scene" id="scene">
     <img id="loveImage">
     <div class="message" id="loveMessage"></div>
 </div>
 
-<!-- COLLAGE -->
 <div class="collage" id="collage"></div>
 
-<!-- FINAL -->
 <div class="final-container" id="finalContainer">
     <div class="final-text" id="finalText">
         Happy Valentine's Day 💖<br>
-        For Many More Beautiful Years To Come
+ To Many More Beautiful Memories With You
     </div>
-    <img src="Redrose.jpg" class="final-rose" id="finalRose">
+    <img src="Redrose-removebg-preview.png" class="final-rose" id="finalRose">
 </div>
 
-<!-- MUSIC -->
-<audio id="music" loop preload="auto"></audio>
+<audio id="music" loop></audio>
 
 <script>
-
-/* ONLY FIRST 3 IMAGES + MESSAGES */
 
 const images = [
     "WhatsApp1.jpeg",
@@ -197,58 +193,49 @@ const images = [
 ];
 
 const messages = [
-    "Through those glasses, my eyes only saw you...",
-    "You are my favorite person in this universe.",
-    "Nothing matters to me more than you."
+    "Through those glasses, my eyes only saw you, and in that moment m happy that it was you.",
+    "You are my favorite person in this universe, the calm in my chaos and the smile in my day.",
+    "Nothing matters to me more than you, and I want to grow with you,i love you dumdum."
 ];
 
 let index = 0;
 
 function startLove(){
 
-    /* MUSIC FIX WITHOUT <source> */
     const music = document.getElementById("music");
     music.src = "JVKE -  pretty (lyric video).mp3";
     music.volume = 0.8;
-    music.load();
+    music.play().catch(err => console.log(err));
 
-    music.play().catch(err => console.log("Music issue:", err));
-
-    const start = document.getElementById("startScreen");
-    start.style.opacity = "0";
+    document.getElementById("startScreen").style.opacity = "0";
 
     setTimeout(()=>{
-        start.style.display = "none";
-
+        document.getElementById("startScreen").style.display = "none";
         const scene = document.getElementById("scene");
         scene.style.display = "flex";
-
         setTimeout(()=>{
             scene.style.opacity = "1";
             showNext();
+            startHearts();
         },300);
-
     },1500);
 }
 
 function typeWriter(text, element){
     element.innerHTML = "";
     let i = 0;
-
     const interval = setInterval(()=>{
         element.innerHTML += text.charAt(i);
         i++;
         if(i >= text.length){
             clearInterval(interval);
         }
-    },40);
+    },35);
 }
 
 function showNext(){
-
     if(index >= images.length){
         document.getElementById("scene").style.opacity = "0";
-
         setTimeout(()=>{
             document.getElementById("scene").style.display = "none";
             showCollage();
@@ -260,12 +247,10 @@ function showNext(){
     typeWriter(messages[index], document.getElementById("loveMessage"));
 
     index++;
-
-    setTimeout(showNext,5000);
+    setTimeout(showNext,6500);
 }
 
 function showCollage(){
-
     const collage = document.getElementById("collage");
     collage.style.display = "block";
 
@@ -282,15 +267,31 @@ function showCollage(){
         const rose = document.getElementById("finalRose");
 
         container.style.opacity = "1";
-
-        setTimeout(()=>{ text.style.opacity = "1"; },800);
+        text.style.opacity = "1";
 
         setTimeout(()=>{
             rose.style.opacity = "1";
             rose.style.transform = "translateY(0)";
-        },2500);
+        },2000);
 
-    },3000);
+    },3500);
+}
+
+/* HEART TRAIN */
+
+function startHearts(){
+    setInterval(()=>{
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = "❤️";
+        heart.style.left = Math.random()*100 + "vw";
+        heart.style.fontSize = (15 + Math.random()*20) + "px";
+        document.body.appendChild(heart);
+
+        setTimeout(()=>{
+            heart.remove();
+        },6000);
+    },400);
 }
 
 </script>
