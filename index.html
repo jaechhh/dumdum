@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Happy Valentine's Day ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    background: linear-gradient(135deg, #1a001f, #000);
+    font-family: 'Georgia', serif;
+    overflow: hidden;
+    color: white;
+}
+
+/* Open Button */
+.open-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px 40px;
+    font-size: 22px;
+    border: 2px solid #ff4d6d;
+    background: transparent;
+    color: #ff4d6d;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: 0.4s;
+}
+.open-btn:hover {
+    background: #ff4d6d;
+    color: black;
+}
+
+/* Popup */
+.popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    position: relative;
+    width: 95%;
+    max-width: 1000px;
+    height: 85%;
+    background: linear-gradient(to bottom, #200010, #000);
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 0 40px #ff1a4d;
+    animation: zoomIn 1s ease forwards;
+}
+
+/* Title */
+.message {
+    position: absolute;
+    top: 25px;
+    width: 100%;
+    text-align: center;
+    font-size: 36px;
+    color: #ff4d6d;
+}
+
+/* Heart Shape Photos */
+.photo {
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    object-fit: cover;
+    clip-path: circle(50% at 50% 50%);
+    box-shadow: 0 0 25px #ff4d6d;
+    animation: float 4s ease-in-out infinite;
+}
+
+.left { left: 80px; top: 160px; }
+.right { right: 80px; top: 160px; }
+.center { bottom: 100px; left: 50%; transform: translateX(-50%); }
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+/* Animations */
+@keyframes zoomIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+}
+</style>
+</head>
+
+<body>
+
+<button class="open-btn" onclick="openPopup()">Open My Heart ❤️</button>
+
+<div class="popup" id="popup">
+    <div class="popup-content">
+
+        <div class="close" onclick="closePopup()">✖</div>
+
+        <div class="message">
+            Happy Valentine's Day 💖<br>
+            You Are My Mine🌹
+            my dumdum my pretty
+        </div>
+
+        <img src="WhatsApp1.jpg" class="photo left">
+        <img src="WhatsApp2.jpg" class="photo right">
+        <img src="WhatsApp3.jpg" class="photo center">
+
+    </div>
+</div>
+
+<audio id="music" src="JVKE -  pretty (lyric video).mp3" loop></audio>
+
+<script>
+function openPopup() {
+    document.getElementById("popup").style.display = "flex";
+    document.getElementById("music").play();
+}
+
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+}
+</script>
+
+</body>
+</html>
