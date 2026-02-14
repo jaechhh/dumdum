@@ -35,36 +35,51 @@ body{
     cursor:pointer;
     backdrop-filter:blur(6px);
     letter-spacing:2px;
-    transition:0.4s;
 }
 
-.start-btn:hover{
-    background:rgba(0,0,0,0.85);
-}
-
-/* SLIDESHOW */
+/* SCENE */
 
 .scene{
     position:fixed;
     inset:0;
     display:none;
-    justify-content:flex-start;
-    align-items:center;
     flex-direction:column;
+    align-items:center;
     padding-top:80px;
     background:
         linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
         url("download (1).jpeg") center center / cover no-repeat;
     opacity:0;
     transition:opacity 1.5s ease;
+    perspective:1200px;
 }
 
-.scene img{
-    width:300px;
-    height:300px;
+.book{
+    width:320px;
+    height:320px;
+    position:relative;
+    transform-style:preserve-3d;
+}
+
+.page{
+    position:absolute;
+    width:100%;
+    height:100%;
+    backface-visibility:hidden;
+    transform-origin:left;
+    transition:transform 1.2s ease-in-out;
+}
+
+.page img{
+    width:100%;
+    height:100%;
     object-fit:cover;
     border-radius:25px;
     box-shadow:0 0 60px rgba(255,0,80,0.6);
+}
+
+.page.flip{
+    transform:rotateY(-180deg);
 }
 
 .message{
@@ -75,7 +90,6 @@ body{
     max-width:80%;
     line-height:1.6;
     min-height:80px;
-    text-shadow:0 0 15px rgba(0,0,0,0.8);
 }
 
 /* COLLAGE */
@@ -100,7 +114,7 @@ body{
 /* FINAL */
 
 .final-container{
-    position:absolute;
+    position:fixed;
     inset:0;
     display:flex;
     flex-direction:column;
@@ -117,7 +131,7 @@ body{
     font-weight:300;
     color:white;
     text-shadow:0 0 40px rgba(255,100,100,0.9);
-    margin-bottom:30px;
+    margin-bottom:20px;
     opacity:0;
     transition:opacity 2s ease;
 }
@@ -133,40 +147,24 @@ body{
         drop-shadow(0 0 60px rgba(255,80,80,0.7));
 }
 
-/* FLYING LOVE TEXT */
+/* CENTERED I LOVE YOU */
 
-.love-fly{
-    position:relative;
-    margin-top:25px;
-    font-size:40px;
-    font-weight:bold;
-    color:white;
-    letter-spacing:8px;
-    text-shadow:0 0 25px rgba(255,80,120,0.9);
-    height:60px;
-}
-
-.love-letter{
+.love-center{
     position:absolute;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:60px;
+    font-weight:bold;
+    letter-spacing:10px;
+    color:white;
+    text-shadow:0 0 40px rgba(255,80,120,0.9);
     opacity:0;
-    animation:flyIn 1.8s forwards ease;
+    transition:opacity 2s ease;
 }
 
-@keyframes flyIn{
-    0%{
-        transform:translate(var(--x), var(--y)) rotate(180deg) scale(0.5);
-        opacity:0;
-    }
-    60%{
-        opacity:1;
-    }
-    100%{
-        transform:translate(0,0) rotate(0deg) scale(1);
-        opacity:1;
-    }
-}
-
-/* HEART TRAIN */
+/* HEARTS */
 
 .heart{
     position:fixed;
@@ -195,7 +193,7 @@ body{
 </div>
 
 <div class="scene" id="scene">
-    <img id="loveImage">
+    <div class="book" id="book"></div>
     <div class="message" id="loveMessage"></div>
 </div>
 
@@ -209,10 +207,12 @@ body{
 
     <img src="Redrose-removebg-preview.png" class="final-rose" id="finalRose">
 
-    <div class="love-fly" id="loveFly"></div>
+    <div class="love-center" id="loveCenter">I LOVE YOU</div>
 </div>
 
-<audio id="music" loop></audio>
+<audio id="music" loop preload="auto">
+    <source src="JVKE -  pretty (lyric video).mp3" type="audio/mpeg">
+</audio>
 
 <script>
 
@@ -233,7 +233,6 @@ let index = 0;
 function startLove(){
 
     const music = document.getElementById("music");
-    music.src = "JVKE -  pretty (lyric video).mp3";
     music.volume = 0.8;
     music.play().catch(err => console.log(err));
 
@@ -264,6 +263,7 @@ function typeWriter(text, element){
 }
 
 function showNext(){
+
     if(index >= images.length){
         document.getElementById("scene").style.opacity = "0";
         setTimeout(()=>{
@@ -273,7 +273,21 @@ function showNext(){
         return;
     }
 
-    document.getElementById("loveImage").src = images[index];
+    const book = document.getElementById("book");
+
+    const page = document.createElement("div");
+    page.className = "page";
+
+    const img = document.createElement("img");
+    img.src = images[index];
+
+    page.appendChild(img);
+    book.appendChild(page);
+
+    setTimeout(()=>{
+        page.classList.add("flip");
+    },100);
+
     typeWriter(messages[index], document.getElementById("loveMessage"));
 
     index++;
@@ -295,6 +309,7 @@ function showCollage(){
         const container = document.getElementById("finalContainer");
         const text = document.getElementById("finalText");
         const rose = document.getElementById("finalRose");
+        const love = document.getElementById("loveCenter");
 
         container.style.opacity = "1";
         text.style.opacity = "1";
@@ -302,38 +317,14 @@ function showCollage(){
         setTimeout(()=>{
             rose.style.opacity = "1";
             rose.style.transform = "translateY(0)";
-            flyLoveText();
         },2000);
+
+        setTimeout(()=>{
+            love.style.opacity = "1";
+        },3500);
 
     },3500);
 }
-
-/* FLYING TEXT */
-
-function flyLoveText(){
-    const text = "I LOVE YOU";
-    const container = document.getElementById("loveFly");
-    container.innerHTML = "";
-
-    text.split("").forEach((letter, i)=>{
-        const span = document.createElement("span");
-        span.className = "love-letter";
-        span.innerHTML = letter;
-
-        const startX = (Math.random() > 0.5 ? -400 : 400) + "px";
-        const startY = (Math.random() > 0.5 ? -400 : 400) + "px";
-
-        span.style.setProperty("--x", startX);
-        span.style.setProperty("--y", startY);
-
-        span.style.left = (i * 35) + "px";
-        span.style.animationDelay = (i * 0.2) + "s";
-
-        container.appendChild(span);
-    });
-}
-
-/* HEART TRAIN */
 
 function startHearts(){
     setInterval(()=>{
