@@ -33,8 +33,6 @@ body{
     color:white;
     border-radius:50px;
     cursor:pointer;
-    backdrop-filter:blur(6px);
-    letter-spacing:2px;
 }
 
 /* SCENE */
@@ -58,15 +56,13 @@ body{
     width:320px;
     height:320px;
     position:relative;
-    transform-style:preserve-3d;
 }
 
 .page{
     position:absolute;
     width:100%;
     height:100%;
-    backface-visibility:hidden;
-    transform-origin:left;
+    transform-origin:bottom;
     transition:transform 1.2s ease-in-out;
 }
 
@@ -79,7 +75,7 @@ body{
 }
 
 .page.flip{
-    transform:rotateY(-180deg);
+    transform:rotateX(-180deg);
 }
 
 .message{
@@ -147,21 +143,35 @@ body{
         drop-shadow(0 0 60px rgba(255,80,80,0.7));
 }
 
-/* CENTERED I LOVE YOU */
+/* I LOVE YOU BELOW ROSE */
 
-.love-center{
-    position:absolute;
-    inset:0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:60px;
+.love-below{
+    margin-top:25px;
+    font-size:50px;
     font-weight:bold;
-    letter-spacing:10px;
     color:white;
+    letter-spacing:8px;
     text-shadow:0 0 40px rgba(255,80,120,0.9);
+    position:relative;
+    height:70px;
+}
+
+.love-letter{
+    position:absolute;
     opacity:0;
-    transition:opacity 2s ease;
+    animation:flyIn 2s forwards ease;
+}
+
+@keyframes flyIn{
+    0%{
+        transform:translate(var(--x), var(--y)) rotate(360deg) scale(0.5);
+        opacity:0;
+    }
+    70%{ opacity:1; }
+    100%{
+        transform:translate(0,0) rotate(0deg) scale(1);
+        opacity:1;
+    }
 }
 
 /* HEARTS */
@@ -207,7 +217,7 @@ body{
 
     <img src="Redrose-removebg-preview.png" class="final-rose" id="finalRose">
 
-    <div class="love-center" id="loveCenter">I LOVE YOU</div>
+    <div class="love-below" id="loveBelow"></div>
 </div>
 
 <audio id="music" loop preload="auto">
@@ -250,7 +260,7 @@ function startLove(){
     },1500);
 }
 
-function typeWriter(text, element){
+function typeWriter(text, element, callback){
     element.innerHTML = "";
     let i = 0;
     const interval = setInterval(()=>{
@@ -258,6 +268,7 @@ function typeWriter(text, element){
         i++;
         if(i >= text.length){
             clearInterval(interval);
+            if(callback) callback();
         }
     },35);
 }
@@ -274,7 +285,6 @@ function showNext(){
     }
 
     const book = document.getElementById("book");
-
     const page = document.createElement("div");
     page.className = "page";
 
@@ -284,14 +294,14 @@ function showNext(){
     page.appendChild(img);
     book.appendChild(page);
 
-    setTimeout(()=>{
-        page.classList.add("flip");
-    },100);
-
-    typeWriter(messages[index], document.getElementById("loveMessage"));
+    typeWriter(messages[index], document.getElementById("loveMessage"), ()=>{
+        setTimeout(()=>{
+            page.classList.add("flip");
+        },500);
+    });
 
     index++;
-    setTimeout(showNext,6500);
+    setTimeout(showNext,7000);
 }
 
 function showCollage(){
@@ -309,7 +319,6 @@ function showCollage(){
         const container = document.getElementById("finalContainer");
         const text = document.getElementById("finalText");
         const rose = document.getElementById("finalRose");
-        const love = document.getElementById("loveCenter");
 
         container.style.opacity = "1";
         text.style.opacity = "1";
@@ -317,13 +326,32 @@ function showCollage(){
         setTimeout(()=>{
             rose.style.opacity = "1";
             rose.style.transform = "translateY(0)";
+            flyLove();
         },2000);
 
-        setTimeout(()=>{
-            love.style.opacity = "1";
-        },3500);
-
     },3500);
+}
+
+function flyLove(){
+    const text = "I LOVE YOU";
+    const container = document.getElementById("loveBelow");
+    container.innerHTML = "";
+
+    text.split("").forEach((letter, i)=>{
+        const span = document.createElement("span");
+        span.className = "love-letter";
+        span.innerHTML = letter;
+
+        const startX = (Math.random()*800 - 400) + "px";
+        const startY = (Math.random()*600 - 300) + "px";
+
+        span.style.setProperty("--x", startX);
+        span.style.setProperty("--y", startY);
+        span.style.left = (i * 40) + "px";
+        span.style.animationDelay = (i * 0.2) + "s";
+
+        container.appendChild(span);
+    });
 }
 
 function startHearts(){
@@ -334,10 +362,7 @@ function startHearts(){
         heart.style.left = Math.random()*100 + "vw";
         heart.style.fontSize = (15 + Math.random()*20) + "px";
         document.body.appendChild(heart);
-
-        setTimeout(()=>{
-            heart.remove();
-        },6000);
+        setTimeout(()=> heart.remove(),6000);
     },400);
 }
 
