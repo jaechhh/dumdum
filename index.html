@@ -5,136 +5,196 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-    margin: 0;
-    background: linear-gradient(135deg, #1a001f, #000);
-    font-family: 'Georgia', serif;
-    overflow: hidden;
-    color: white;
+body{
+    margin:0;
+    background:black;
+    overflow:hidden;
+    font-family: Georgia, serif;
+    color:white;
 }
 
-/* Open Button */
-.open-btn {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px 40px;
-    font-size: 22px;
-    border: 2px solid #ff4d6d;
-    background: transparent;
-    color: #ff4d6d;
-    border-radius: 40px;
-    cursor: pointer;
-    transition: 0.4s;
-}
-.open-btn:hover {
-    background: #ff4d6d;
-    color: black;
+/* Start Button */
+.start-btn{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    padding:20px 40px;
+    font-size:22px;
+    border:none;
+    background:#ff2e63;
+    color:white;
+    border-radius:40px;
+    cursor:pointer;
 }
 
-/* Popup */
-.popup {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.9);
-    display: none;
-    justify-content: center;
-    align-items: center;
+/* Scene */
+.scene{
+    position:fixed;
+    inset:0;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    text-align:center;
+    background:black;
 }
 
-.popup-content {
-    position: relative;
-    width: 95%;
-    max-width: 1000px;
-    height: 85%;
-    background: linear-gradient(to bottom, #200010, #000);
-    border-radius: 25px;
-    overflow: hidden;
-    box-shadow: 0 0 40px #ff1a4d;
-    animation: zoomIn 1s ease forwards;
+/* Fullscreen Image */
+.scene img{
+    max-width:90%;
+    max-height:70%;
+    border-radius:20px;
+    box-shadow:0 0 40px #ff2e63;
+    animation: pop 1s ease;
 }
 
-/* Title */
-.message {
-    position: absolute;
-    top: 25px;
-    width: 100%;
-    text-align: center;
-    font-size: 36px;
-    color: #ff4d6d;
+/* Message */
+.message{
+    margin-top:20px;
+    font-size:26px;
+    color:#ff4d6d;
+    text-shadow:0 0 15px #ff2e63;
 }
 
-/* Heart Shape Photos */
-.photo {
-    position: absolute;
-    width: 220px;
-    height: 220px;
-    object-fit: cover;
-    clip-path: circle(50% at 50% 50%);
-    box-shadow: 0 0 25px #ff4d6d;
-    animation: float 4s ease-in-out infinite;
+/* Collage Background */
+.collage{
+    position:fixed;
+    inset:0;
+    display:none;
+    overflow:hidden;
 }
 
-.left { left: 80px; top: 160px; }
-.right { right: 80px; top: 160px; }
-.center { bottom: 100px; left: 50%; transform: translateX(-50%); }
+.collage img{
+    height:100%;
+    object-fit:cover;
+    float:left;
+    animation: fadeIn 2s ease forwards;
+}
 
-.close {
-    position: absolute;
-    top: 15px;
-    right: 25px;
-    font-size: 26px;
-    cursor: pointer;
+/* Final Text */
+.final-text{
+    position:absolute;
+    top:30%;
+    width:100%;
+    text-align:center;
+    font-size:38px;
+    color:white;
+    text-shadow:0 0 20px #ff2e63;
+    display:none;
+}
+
+/* Rose */
+.rose{
+    position:absolute;
+    bottom:40px;
+    width:100%;
+    text-align:center;
+    font-size:60px;
+    animation: float 3s infinite;
+    display:none;
 }
 
 /* Animations */
-@keyframes zoomIn {
-    from { transform: scale(0.7); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+@keyframes pop{
+    from{transform:scale(0);}
+    to{transform:scale(1);}
 }
 
-@keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-15px); }
-    100% { transform: translateY(0px); }
+@keyframes fadeIn{
+    from{opacity:0;}
+    to{opacity:1;}
+}
+
+@keyframes float{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-20px);}
+    100%{transform:translateY(0);}
 }
 </style>
 </head>
 
 <body>
 
-<button class="open-btn" onclick="openPopup()">Open My Heart ❤️</button>
+<button class="start-btn" onclick="startLove()">Start ❤️</button>
 
-<div class="popup" id="popup">
-    <div class="popup-content">
-
-        <div class="close" onclick="closePopup()">✖</div>
-
-        <div class="message">
-            Happy Valentine's Day 💖<br>
-            You Are My Mine🌹
-            my dumdum my pretty
-        </div>
-
-        <img src="WhatsApp1.jpg" class="photo left">
-        <img src="WhatsApp2.jpg" class="photo right">
-        <img src="WhatsApp3.jpg" class="photo center">
-
-    </div>
+<div class="scene" id="scene">
+    <img id="loveImage">
+    <div class="message" id="loveMessage"></div>
 </div>
 
-<audio id="music" src="JVKE -  pretty (lyric video).mp3" loop></audio>
+<div class="collage" id="collage"></div>
+
+<div class="final-text" id="finalText">
+    Happy Valentine's Day 💖<br>
+    For Many More Beautiful Years To Come🌹
+    ily my dumdum
+</div>
+
+<div class="rose" id="rose">
+    🤲🌹🌹🌹
+</div>
+
+<audio id="music" src="music.mp3" loop></audio>
 
 <script>
-function openPopup() {
-    document.getElementById("popup").style.display = "flex";
+
+/* 🔥 ADD OR REMOVE IMAGES HERE */
+const images = [
+    "WhatsApp1.jpeg",
+    "WhatsApp2.jpeg",
+    "WhatsApp3.jpeg",
+    "WhatsApp4.jpeg",
+    "WhatsApp5.jpeg",
+    "WhatsApp6.jpeg",
+    // Add more like this:
+    // "WhatsApp4.jpeg",
+    // "WhatsApp5.jpeg",
+];
+
+/* Messages for popup sequence */
+const messages = [
+    "through those glasses my eyes only saw you... ❤️",
+    "You are my favorite person  💖",
+    "And I want to be with you 🌹"
+];
+
+let index = 0;
+
+function startLove(){
+    document.querySelector(".start-btn").style.display="none";
+    document.getElementById("scene").style.display="flex";
     document.getElementById("music").play();
+    showNext();
 }
 
-function closePopup() {
-    document.getElementById("popup").style.display = "none";
+function showNext(){
+    if(index < messages.length){
+        document.getElementById("loveImage").src = images[index];
+        document.getElementById("loveMessage").innerText = messages[index];
+        index++;
+        setTimeout(showNext,4000);
+    } else {
+        document.getElementById("scene").style.display="none";
+        showCollage();
+    }
 }
+
+function showCollage(){
+    const collage = document.getElementById("collage");
+    collage.style.display="block";
+
+    images.forEach(imgSrc => {
+        const img = document.createElement("img");
+        img.src = imgSrc;
+        img.style.width = 100 / images.length + "%";
+        collage.appendChild(img);
+    });
+
+    document.getElementById("finalText").style.display="block";
+    document.getElementById("rose").style.display="block";
+}
+
 </script>
 
 </body>
