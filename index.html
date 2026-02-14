@@ -126,7 +126,6 @@ body{
     opacity:0;
     transform:translateY(40px);
     transition:opacity 2s ease, transform 2s ease;
-
     filter:
         drop-shadow(0 25px 45px rgba(0,0,0,0.6))
         drop-shadow(0 0 40px rgba(255,0,80,0.4));
@@ -189,77 +188,90 @@ const messages = [
 ];
 
 let index = 0;
+let typingInterval;
 
 function startLove(){
 
-    document.getElementById("music").play().catch(()=>{});
+    const music = document.getElementById("music");
+    if(music){
+        music.play().catch(()=>{});
+    }
 
     const start = document.getElementById("startScreen");
-    start.style.opacity="0";
-    setTimeout(()=>{ start.style.display="none"; },1500);
+    start.style.opacity = "0";
 
-    const scene=document.getElementById("scene");
-    scene.style.display="flex";
-    setTimeout(()=>{ scene.style.opacity="1"; },100);
+    setTimeout(()=>{
+        start.style.display = "none";
 
-    showNext();
+        const scene = document.getElementById("scene");
+        scene.style.display = "flex";
+
+        setTimeout(()=>{
+            scene.style.opacity = "1";
+            showNext();
+        },100);
+
+    },1500);
 }
 
-function typeWriter(text,element){
-    element.innerHTML="";
-    let i=0;
-    const interval=setInterval(()=>{
-        element.innerHTML+=text.charAt(i);
+function typeWriter(text, element){
+
+    element.innerHTML = "";
+    let i = 0;
+
+    clearInterval(typingInterval);
+
+    typingInterval = setInterval(()=>{
+        element.innerHTML += text.charAt(i);
         i++;
-        if(i>=text.length) clearInterval(interval);
+        if(i >= text.length){
+            clearInterval(typingInterval);
+        }
     },40);
 }
 
 function showNext(){
 
-    if(index < images.length){
-
-        document.getElementById("loveImage").src = images[index];
-
-        const messageText = messages[index] || "";
-
-        typeWriter(messageText, document.getElementById("loveMessage"));
-
-        index++;
-
-        setTimeout(showNext,5000);
-
-    } else {
-
-        document.getElementById("scene").style.opacity="0";
+    if(index >= images.length){
+        document.getElementById("scene").style.opacity = "0";
         setTimeout(showCollage,1500);
+        return;
     }
+
+    const img = document.getElementById("loveImage");
+    const msg = document.getElementById("loveMessage");
+
+    img.src = images[index];
+    typeWriter(messages[index] || "", msg);
+
+    index++;
+
+    setTimeout(showNext,5000);
 }
 
 function showCollage(){
 
-    const collage=document.getElementById("collage");
-    collage.style.display="block";
+    const collage = document.getElementById("collage");
+    collage.style.display = "block";
 
     images.forEach(src=>{
-        const img=document.createElement("img");
-        img.src=src;
+        const img = document.createElement("img");
+        img.src = src;
         collage.appendChild(img);
     });
 
     setTimeout(()=>{
+        const container = document.getElementById("finalContainer");
+        const text = document.getElementById("finalText");
+        const rose = document.getElementById("finalRose");
 
-        const container=document.getElementById("finalContainer");
-        const text=document.getElementById("finalText");
-        const rose=document.getElementById("finalRose");
+        container.style.opacity = "1";
 
-        container.style.opacity="1";
-
-        setTimeout(()=>{ text.style.opacity="1"; },500);
+        setTimeout(()=>{ text.style.opacity = "1"; },500);
 
         setTimeout(()=>{
-            rose.style.opacity="1";
-            rose.style.transform="translateY(0)";
+            rose.style.opacity = "1";
+            rose.style.transform = "translateY(0)";
         },2500);
 
     },2000);
