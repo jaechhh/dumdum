@@ -71,7 +71,7 @@ body{
     font-size:26px;
     color:#ff6b81;
     text-align:center;
-    min-height:40px;
+    min-height:50px;
     text-shadow:0 0 15px rgba(0,0,0,0.8);
 }
 
@@ -91,7 +91,7 @@ body{
     position:absolute;
     opacity:0;
     filter:blur(6px);
-    animation:fadeIn 2s forwards;
+    animation:fadeIn 3s forwards;
 }
 
 /* ---------- FINAL MESSAGE ---------- */
@@ -107,6 +107,7 @@ body{
     align-items:center;
     opacity:0;
     transition:opacity 2s ease;
+    z-index:10;
 }
 
 .final-text{
@@ -129,20 +130,17 @@ body{
     filter:
         drop-shadow(0 25px 45px rgba(0,0,0,0.6))
         drop-shadow(0 0 40px rgba(255,0,80,0.4));
-
-    mask-image: radial-gradient(circle at center, black 70%, transparent 100%);
-    -webkit-mask-image: radial-gradient(circle at center, black 70%, transparent 100%);
 }
 
 /* ---------- ANIMATIONS ---------- */
 
 @keyframes zoomFade{
-    from{transform:scale(0.85);opacity:0;}
+    from{transform:scale(0.8);opacity:0;}
     to{transform:scale(1);opacity:1;}
 }
 
 @keyframes fadeIn{
-    to{opacity:0.3;}
+    to{opacity:0.35;}
 }
 </style>
 </head>
@@ -181,16 +179,13 @@ body{
 const images = [
     "WhatsApp1.jpeg",
     "WhatsApp2.jpeg",
-    "WhatsApp3.jpeg",
-    "WhatsApp4.jpeg",
-    "WhatsApp5.jpeg",
-    "WhatsApp6.jpeg"
+    "WhatsApp3.jpeg"
 ];
 
 const messages = [
     "Through those glasses, my eyes only saw you...",
-    "You are my,,,my favorite person in this universe.",
-    "nothing matters to me more than you."
+    "You are my favorite person in this universe.",
+    "Nothing matters to me more than you."
 ];
 
 let index = 0;
@@ -221,18 +216,28 @@ function typeWriter(text,element){
 }
 
 function showNext(){
-    if(index < messages.length){
-        document.getElementById("loveImage").src=images[index];
-        typeWriter(messages[index],document.getElementById("loveMessage"));
+
+    if(index < images.length){
+
+        document.getElementById("loveImage").src = images[index];
+
+        const messageText = messages[index] || "";
+
+        typeWriter(messageText, document.getElementById("loveMessage"));
+
         index++;
+
         setTimeout(showNext,5000);
+
     } else {
+
         document.getElementById("scene").style.opacity="0";
         setTimeout(showCollage,1500);
     }
 }
 
 function showCollage(){
+
     const collage=document.getElementById("collage");
     collage.style.display="block";
 
@@ -243,15 +248,14 @@ function showCollage(){
     });
 
     setTimeout(()=>{
+
         const container=document.getElementById("finalContainer");
         const text=document.getElementById("finalText");
         const rose=document.getElementById("finalRose");
 
         container.style.opacity="1";
 
-        setTimeout(()=>{
-            text.style.opacity="1";
-        },500);
+        setTimeout(()=>{ text.style.opacity="1"; },500);
 
         setTimeout(()=>{
             rose.style.opacity="1";
